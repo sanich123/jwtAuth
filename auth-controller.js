@@ -1,9 +1,9 @@
-const User = require("./models/User.js");
-const Role = require("./models/Role.js");
-const bcryptjs = require("bcryptjs");
-const { validationResult } = require("express-validator");
-const jwt = require("jsonwebtoken");
-const { secret } = require("./config.js");
+import User from "./models/User.js";
+import Role from "./models/Role.js";
+import bcryptjs from "bcryptjs";
+import { validationResult } from "express-validator";
+import jwt from "jsonwebtoken";
+import { secret } from "./config.js";
 
 function generateAccessToken(id, roles) {
   const payload = {
@@ -73,4 +73,4 @@ class AuthController {
   }
 }
 
-module.exports = new AuthController();
+export default new AuthController();

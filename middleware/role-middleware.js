@@ -1,7 +1,7 @@
-const { verify } = require("jsonwebtoken");
-const { secret } = require("../config.js");
+import { verify } from "jsonwebtoken";
+import { secret } from "../config.js";
 
-module.exports = function (roles) {
+export function roleMiddleware(roles) {
   return function (req, res, next) {
     if (req.method === "OPTIONS") {
       next();
