@@ -2,6 +2,7 @@ const User = require("./models/user.js");
 const Role = require("./models/role.js");
 const bcryptjs = require("bcryptjs");
 const { validationResult } = require("express-validator");
+const jwt = require("jsonwebtoken");
 
 class AuthController {
   async registration(req, res) {
