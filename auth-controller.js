@@ -1,8 +1,17 @@
-const User = require("./models/user.js");
-const Role = require("./models/role.js");
+const User = require("./models/User.js");
+const Role = require("./models/Role.js");
 const bcryptjs = require("bcryptjs");
 const { validationResult } = require("express-validator");
 const jwt = require("jsonwebtoken");
+const { secret } = require("./config.js");
+
+function generateAccessToken(id, roles) {
+  const payload = {
+    id,
+    roles,
+  };
+  return jwt.sign(payload, secret, { expiresIn: "24h" });
+}
 
 class AuthController {
   async registration(req, res) {
@@ -21,12 +30,12 @@ class AuthController {
           .status(400)
           .json({ message: "Пользователь с таким именем уже есть" });
       }
-      const userRole = await Role.findOne({ value: "USER" });
+      const {value} = await Role.findOne({ value: "USER" });
       const hashPassword = bcryptjs.hashSync(password, 7);
       const user = new User({
         username,
         password: hashPassword,
-        roles: [userRole.value],
+        roles: [value],
       });
       await user.save();
       return res
@@ -40,26 +49,26 @@ class AuthController {
   async login(req, res) {
     try {
       const { username, password } = req.body;
-      const oldFriend = await User.findOne({ username });
-      if (!oldFriend) {
+      const user = await User.findOne({ username });
+      if (!user) {
         return res
           .status(400)
           .json({ message: `There is no ${username} in our database` });
       }
-      const currentPassword = bcryptjs.compareSync(
-        password,
-        oldFriend.password
-      );
+      const currentPassword = bcryptjs.compareSync(password, user.password);
       if (!currentPassword) {
         return res.status(400).json({ message: "Введен неправильный пароль" });
       }
+      const token = generateAccessToken(user._id, user.roles);
+      return res.json({ token });
     } catch (error) {
       res.status(400).json({ message: "Login error" });
     }
   }
   async getUsers(req, res) {
     try {
-      res.json("server works");
+      const users = await User.find();
+      res.json(users);
     } catch (error) {}
   }
 }
