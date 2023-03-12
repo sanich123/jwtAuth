@@ -1,10 +1,11 @@
 import { Router } from "express";
+import { Request, Response, NextFunction, RequestHandler } from 'express';
 import authController from "./auth-controller.js";
 import { check } from "express-validator";
 import { authMiddleware } from "./middleware/auth-middleware.js";
 import { roleMiddleware } from "./middleware/role-middleware.js";
 
-const router = new Router();
+const router = new (Router as any)();
 router.post(
   "/registration",
   [

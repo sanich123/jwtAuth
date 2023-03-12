@@ -1,12 +1,13 @@
-import { verify } from "jsonwebtoken";
+import { Request, Response, NextFunction } from 'express';
+import { JwtPayload, verify } from "jsonwebtoken";
 import { secret } from "../config.js";
 
-export function authMiddleware(req, res, next) {
+export function authMiddleware(req: Request & {user: string | JwtPayload}, res: Response, next: NextFunction) {
   if (req.method === "OPTIONS") {
     next();
   }
   try {
-    const token = req.headers.authorization.split(" ")[1];
+    const token = req.headers.authorization?.split(" ")[1];
     if (!token) {
       return res.status(403).json({ message: "Пользователь не авторизован" });
     }
