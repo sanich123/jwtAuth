@@ -1,14 +1,14 @@
-import express from "express";
-import mongoose from "mongoose";
-import router from "./auth-router.js";
-import { MONGO_DB_CONNECTION, Routes } from "./const.js";
+const express = require("express");
+const mongoose = require("mongoose");
+const router = require("./auth-router.js");
+const { MONGO_DB_CONNECTION, Routes } = require("./const.js");
 const PORT = process.env.PORT || 3000;
-export const app = express();
+const app = express();
 
 app.use(express.json());
 app.use(Routes.auth, router);
 
-(async () => {
+async function start() {
   try {
     await mongoose.connect(MONGO_DB_CONNECTION);
     app.listen(PORT, () =>
@@ -17,5 +17,9 @@ app.use(Routes.auth, router);
   } catch (error) {
     console.log(error);
   }
-})();
+};
+
+start();
+
+module.exports = app;
 

@@ -1,14 +1,13 @@
-import User from "./models/User.js";
-import Role from "./models/Role.js";
-import bcryptjs from "bcryptjs";
-import { Request, Response } from "express";
-import { validationResult } from "express-validator";
-import jwt from "jsonwebtoken";
-import { secret } from "./config.js";
-import { Types } from "mongoose";
-import { Message, Roles } from "./const.js";
+const User = require("./models/User.js");
+const Role = require("./models/Role.js");
+const bcryptjs = require("bcryptjs");
+const { validationResult } = require("express-validator");
+const jwt = require("jsonwebtoken");
+const { secret } = require("./config.js");
+const { Types } = require("mongoose");
+const { Message, Roles } = require("./const.js");
 
-function generateAccessToken(id: Types.ObjectId, roles: string[]) {
+function generateAccessToken(id, roles) {
   return jwt.sign(
     {
       id,
@@ -19,7 +18,7 @@ function generateAccessToken(id: Types.ObjectId, roles: string[]) {
   );
 }
 class AuthController {
-  async registration(req: Request, res: Response) {
+  async registration(req, res,) {
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
@@ -51,7 +50,7 @@ class AuthController {
       res.status(400).json({ message: Message.isError });
     }
   }
-  async login(req: Request, res: Response) {
+  async login(req, res) {
     try {
       const { username, password } = req.body;
       const user = await User.findOne({ username });
@@ -70,7 +69,7 @@ class AuthController {
       res.status(400).json({ message: Message.isLoginError });
     }
   }
-  async getUsers(req: Request, res: Response) {
+  async getUsers(req, res) {
     try {
       const users = await User.find();
       res.json(users);
@@ -78,4 +77,4 @@ class AuthController {
   }
 }
 
-export default new AuthController();
+module.exports = new AuthController();

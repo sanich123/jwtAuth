@@ -1,12 +1,8 @@
-import { Request, Response, NextFunction } from "express";
-import { verify } from "jsonwebtoken";
-import { secret } from "../config.js";
+const { verify } = require("jsonwebtoken");
+const { secret } = require("../config.js");
 
-interface ITokenPayload {
-  roles: string[];
-}
-export function roleMiddleware(roles: string[]) {
-  return function (req: Request, res: Response, next: NextFunction) {
+function roleMiddleware(roles) {
+  return function (req, res, next) {
     if (req.method === "OPTIONS") {
       next();
     }
@@ -17,9 +13,9 @@ export function roleMiddleware(roles: string[]) {
     try {
       const [, token] = authHeader.split(" ");
       const decoded = verify(token, secret);
-      const { roles: userRoles } = decoded as ITokenPayload;
+      const { roles: userRoles } = decoded;
       let hasRole = false;
-      userRoles.forEach((role: string) => {
+      userRoles.forEach((role) => {
         if (roles.includes(role)) {
           hasRole = true;
         }
@@ -34,3 +30,5 @@ export function roleMiddleware(roles: string[]) {
     }
   };
 }
+
+module.exports = roleMiddleware;

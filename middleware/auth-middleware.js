@@ -1,8 +1,7 @@
-import { Request, Response, NextFunction } from 'express';
-import { JwtPayload, verify } from "jsonwebtoken";
-import { secret } from "../config.js";
+const {  verify } = require("jsonwebtoken");
+const { secret } = require("../config.js");
 
-export function authMiddleware(req: Request & {user: string | JwtPayload}, res: Response, next: NextFunction) {
+function authMiddleware(req, res, next) {
   if (req.method === "OPTIONS") {
     next();
   }
@@ -19,3 +18,5 @@ export function authMiddleware(req: Request & {user: string | JwtPayload}, res: 
     return res.status(403).json({ message: "Пользователь не авторизован" });
   }
 };
+
+module.exports = authMiddleware;

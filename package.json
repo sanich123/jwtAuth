@@ -6,10 +6,8 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "build": "npx tsc",
-    "dev-tsc": "concurrently \"npx tsc --watch\" \"nodemon -q dist/index.js\""
+    "build": "npx tsc"
   },
-  "type": "module",
   "keywords": [],
   "author": "",
   "license": "ISC",
