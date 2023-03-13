@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 import router from "./auth-router.js";
 import { MONGO_DB_CONNECTION, Routes } from "./const.js";
 const PORT = process.env.PORT || 3000;
-const app = express();
+export const app = express();
 
 app.use(express.json());
 app.use(Routes.auth, router);
@@ -18,3 +18,4 @@ app.use(Routes.auth, router);
     console.log(error);
   }
 })();
+
