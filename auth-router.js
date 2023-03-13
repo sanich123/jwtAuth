@@ -1,4 +1,4 @@
-const Router = require("express");
+const { Router } = require("express");
 const authController = require("./auth-controller.js");
 const { check } = require("express-validator");
 const authMiddleware = require("./middleware/auth-middleware.js");
@@ -10,7 +10,10 @@ router.post(
   Routes.registration,
   [
     check("username", Message.emptyField).notEmpty(),
-    check("password", Message.passwordRequirements).isLength({ min: 4, max: 10 }),
+    check("password", Message.passwordRequirements).isLength({
+      min: 4,
+      max: 10,
+    }),
   ],
   authController.registration
 );
@@ -22,4 +25,4 @@ router.get(
   authController.getUsers
 );
 
-module.exports = router;
+module.exports = { router };
