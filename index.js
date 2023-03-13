@@ -6,20 +6,26 @@ const PORT = process.env.PORT || 3000;
 const app = express();
 
 app.use(express.json());
-app.use(Routes.auth, router);
+app.get('/', (req, res) => {
+  res.send('Hello world')
+})
+// app.use(Routes.auth, router);
+app.listen(PORT, () => {
+  console.log(`Server was working in the ${PORT}`)
+})
 
-async function start() {
-  try {
-    await mongoose.connect(MONGO_DB_CONNECTION);
-    app.listen(PORT, () =>
-      console.log(`server was started at the port ${PORT}`)
-    );
-  } catch (error) {
-    console.log(error);
-  }
-};
+// const start = async () => {
+//   try {
+//     await mongoose.connect(MONGO_DB_CONNECTION);
+//     app.listen(PORT, () =>
+//       console.log(`server was started at the port ${PORT}`)
+//     );
+//   } catch (error) {
+//     console.log(error);
+//   }
+// };
 
-start();
+// start();
 
 module.exports = app;
 
