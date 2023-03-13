@@ -1,23 +1,20 @@
 import express from "express";
 import mongoose from "mongoose";
 import router from "./auth-router.js";
+import { MONGO_DB_CONNECTION, Routes } from "./const.js";
 const PORT = process.env.PORT || 3000;
 const app = express();
 
 app.use(express.json());
-app.use("/auth", router);
+app.use(Routes.auth, router);
 
-const start = async () => {
+(async () => {
   try {
-    await mongoose.connect(
-      "mongodb+srv://sanich123:17011987@auth-backend.frds7zt.mongodb.net/?retryWrites=true&w=majority"
-    );
+    await mongoose.connect(MONGO_DB_CONNECTION);
     app.listen(PORT, () =>
       console.log(`server was started at the port ${PORT}`)
     );
   } catch (error) {
     console.log(error);
   }
-};
-
-start();
+})();

@@ -4,23 +4,21 @@ import authController from "./auth-controller.js";
 import { check } from "express-validator";
 import { authMiddleware } from "./middleware/auth-middleware.js";
 import { roleMiddleware } from "./middleware/role-middleware.js";
+import { Message, Roles, Routes } from "./const.js";
 
 const router = new (Router as any)();
 router.post(
-  "/registration",
+  Routes.registration,
   [
-    check("username", "Поле пользователя не может быть пустым").notEmpty(),
-    check(
-      "password",
-      "Поле пароля должно быть более 4 символов и меньше 10 символов"
-    ).isLength({ min: 4, max: 10 }),
+    check("username", Message.emptyField).notEmpty(),
+    check("password", Message.passwordRequirements).isLength({ min: 4, max: 10 }),
   ],
   authController.registration
 );
-router.post("/login", authController.login);
+router.post(Routes.login, authController.login);
 router.get(
-  "/users",
-  roleMiddleware(["USER"]),
+  Routes.users,
+  roleMiddleware([Roles.user]),
   authMiddleware,
   authController.getUsers
 );

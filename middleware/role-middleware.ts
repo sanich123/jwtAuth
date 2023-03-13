@@ -1,23 +1,23 @@
-import { Request, Response, NextFunction } from 'express';
-import { JwtPayload, verify } from "jsonwebtoken";
+import { Request, Response, NextFunction } from "express";
+import { verify } from "jsonwebtoken";
 import { secret } from "../config.js";
+
 interface ITokenPayload {
   roles: string[];
 }
 export function roleMiddleware(roles: string[]) {
-  return function (req: any, res: Response, next: NextFunction) {
+  return function (req: Request, res: Response, next: NextFunction) {
     if (req.method === "OPTIONS") {
       next();
     }
+    const authHeader = req.headers.authorization;
+    if (!authHeader) {
+      return res.status(403).json({ message: "Пользователь не авторизован" });
+    }
     try {
-      const authHeader = req.headers.authorization;
-
-      if (!authHeader) {
-        return res.status(403).json({ message: "Пользователь не авторизован" });
-      }
-      const [, token] = authHeader.split(' ');
+      const [, token] = authHeader.split(" ");
       const decoded = verify(token, secret);
-      const {roles: userRoles} = decoded as ITokenPayload;
+      const { roles: userRoles } = decoded as ITokenPayload;
       let hasRole = false;
       userRoles.forEach((role: string) => {
         if (roles.includes(role)) {
@@ -33,4 +33,4 @@ export function roleMiddleware(roles: string[]) {
       return res.status(403).json({ message: "Пользователь не авторизован" });
     }
   };
-};
+}

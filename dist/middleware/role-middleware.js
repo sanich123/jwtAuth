@@ -5,12 +5,12 @@ export function roleMiddleware(roles) {
         if (req.method === "OPTIONS") {
             next();
         }
+        const authHeader = req.headers.authorization;
+        if (!authHeader) {
+            return res.status(403).json({ message: "Пользователь не авторизован" });
+        }
         try {
-            const authHeader = req.headers.authorization;
-            if (!authHeader) {
-                return res.status(403).json({ message: "Пользователь не авторизован" });
-            }
-            const [, token] = authHeader.split(' ');
+            const [, token] = authHeader.split(" ");
             const decoded = verify(token, secret);
             const { roles: userRoles } = decoded;
             let hasRole = false;
@@ -30,4 +30,3 @@ export function roleMiddleware(roles) {
         }
     };
 }
-;

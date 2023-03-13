@@ -10,17 +10,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 import express from "express";
 import mongoose from "mongoose";
 import router from "./auth-router.js";
+import { MONGO_DB_CONNECTION } from "./const.js";
 const PORT = process.env.PORT || 3000;
 const app = express();
 app.use(express.json());
-app.use("/auth", router);
-const start = () => __awaiter(void 0, void 0, void 0, function* () {
+app.use("/auth" /* Routes.auth */, router);
+(() => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        yield mongoose.connect("mongodb+srv://sanich123:17011987@auth-backend.frds7zt.mongodb.net/?retryWrites=true&w=majority");
+        yield mongoose.connect(MONGO_DB_CONNECTION);
         app.listen(PORT, () => console.log(`server was started at the port ${PORT}`));
     }
     catch (error) {
         console.log(error);
     }
-});
-start();
+}))();

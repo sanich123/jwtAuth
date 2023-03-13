@@ -14,11 +14,10 @@ import { validationResult } from "express-validator";
 import jwt from "jsonwebtoken";
 import { secret } from "./config.js";
 function generateAccessToken(id, roles) {
-    const payload = {
+    return jwt.sign({
         id,
         roles,
-    };
-    return jwt.sign(payload, secret, { expiresIn: "24h" });
+    }, secret, { expiresIn: "24h" });
 }
 class AuthController {
     registration(req, res) {
@@ -27,7 +26,7 @@ class AuthController {
                 const errors = validationResult(req);
                 if (!errors.isEmpty()) {
                     return res.status(400).json({
-                        message: "Произошла ошибка регистрации пользователя",
+                        message: "\u041F\u0440\u043E\u0438\u0437\u043E\u0448\u043B\u0430 \u043E\u0448\u0438\u0431\u043A\u0430 \u0440\u0435\u0433\u0438\u0441\u0442\u0440\u0430\u0446\u0438\u0438 \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044F" /* Message.registrationError */,
                         errors,
                     });
                 }
@@ -36,9 +35,9 @@ class AuthController {
                 if (candidate) {
                     return res
                         .status(400)
-                        .json({ message: "Пользователь с таким именем уже есть" });
+                        .json({ message: "\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C \u0441 \u0442\u0430\u043A\u0438\u043C \u0438\u043C\u0435\u043D\u0435\u043C \u0443\u0436\u0435 \u0435\u0441\u0442\u044C" /* Message.alreadyHaveThisUser */ });
                 }
-                const userRole = yield Role.findOne({ value: "USER" });
+                const userRole = yield Role.findOne({ value: "USER" /* Roles.user */ });
                 const hashPassword = bcryptjs.hashSync(password, 7);
                 const user = new User({
                     username,
@@ -48,11 +47,11 @@ class AuthController {
                 yield user.save();
                 return res
                     .status(200)
-                    .json({ message: "Пользователь был успешно зарегистрирован" });
+                    .json({ message: "\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C \u0431\u044B\u043B \u0443\u0441\u043F\u0435\u0448\u043D\u043E \u0437\u0430\u0440\u0435\u0433\u0438\u0441\u0442\u0440\u0438\u0440\u043E\u0432\u0430\u043D" /* Message.successRegistration */ });
             }
             catch (error) {
                 console.log(error);
-                res.status(400).json({ message: "Registration error" });
+                res.status(400).json({ message: "Registration error" /* Message.isError */ });
             }
         });
     }
@@ -68,13 +67,13 @@ class AuthController {
                 }
                 const currentPassword = bcryptjs.compareSync(password, user.password);
                 if (!currentPassword) {
-                    return res.status(400).json({ message: "Введен неправильный пароль" });
+                    return res.status(400).json({ message: "\u0412\u0432\u0435\u0434\u0435\u043D \u043D\u0435\u043F\u0440\u0430\u0432\u0438\u043B\u044C\u043D\u044B\u0439 \u043F\u0430\u0440\u043E\u043B\u044C" /* Message.wrongPassword */ });
                 }
                 const token = generateAccessToken(user._id, user.roles);
                 return res.json({ token });
             }
             catch (error) {
-                res.status(400).json({ message: "Login error" });
+                res.status(400).json({ message: "Login error" /* Message.isLoginError */ });
             }
         });
     }
